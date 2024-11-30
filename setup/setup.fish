@@ -9,10 +9,10 @@ if test (count $argv) -ne 1
     exit 1
 end
 
-# pad the input day number with 0's if necessary
+# pad the input day number with a zero
 set day_num (printf "%02d" $argv[1])
 
-set template_dir "template"
+set template_dir "setup/template"
 set puzzle_dir "puzzle$day_num"
 
 # copy template directory
@@ -36,5 +36,6 @@ for file in $puzzle_dir/**
     end
 end
 
+echo "Created $puzzle_dir from template."
 
-echo "Created $puzzle_dir from template. Good luck!"
+# TODO: download input and examples

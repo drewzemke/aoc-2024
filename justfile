@@ -1,6 +1,6 @@
 @get-example day:
-    cd get-example && \
-    deno run -A main.ts 2023 {{day}}
+    cd setup/get-example && \
+    deno run -A get-example.ts 2023 {{day}}
 
 @get-input day:
-    get-input/main.fish {{day}}
+    setup/get-input/get-input.fish {{day}}
