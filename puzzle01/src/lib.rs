@@ -14,3 +14,7 @@ pub fn parse_two_lists(input: &str) -> (Vec<u64>, Vec<u64>) {
 
     (left, right)
 }
+
+pub fn count_occurrences(target: u64, list: &[u64]) -> usize {
+    list.iter().filter(|x| **x == target).count()
+}
