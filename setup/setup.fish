@@ -1,7 +1,11 @@
 #!/usr/bin/env fish
 
 function usage
-    echo "Usage: template/main.fish <day_number>"
+    echo "Usage: setup/setup.fish <day_number>"
+end
+
+function done
+    echo " done."
 end
 
 if test (count $argv) -ne 1
@@ -10,10 +14,13 @@ if test (count $argv) -ne 1
 end
 
 # pad the input day number with a zero
-set day_num (printf "%02d" $argv[1])
+set day $argv[1]
+set day_padded (printf "%02d" $day)
 
 set template_dir "setup/template"
-set puzzle_dir "puzzle$day_num"
+set puzzle_dir "puzzle$day_padded"
+
+echo "Setting up puzzle for "(set_color -o green)"Day $day"(set_color normal)
 
 # copy template directory
 if test -d $puzzle_dir
@@ -22,20 +29,40 @@ if test -d $puzzle_dir
 end
 cp -r $template_dir $puzzle_dir
 
+echo -n "• Creating "(set_color blue)"directory "(set_color -i cyan)"$puzzle_dir"(set_color normal)" from template..."
 # process files: replace DAYNUM with the padded day number
 for file in $puzzle_dir/**
     if test -f $file
         # replace content in files
-        sed -i '' "s/DAYNUM/$day_num/g" $file
+        sed -i '' "s/DAYNUM/$day_padded/g" $file
 
         # rename files
-        set new_name (echo $file | sed "s/DAYNUM/$day_num/g")
+        set new_name (echo $file | sed "s/DAYNUM/$day_padded/g")
         if test "$file" != "$new_name"
             mv $file $new_name
         end
     end
 end
+done
 
-echo "Created $puzzle_dir from template."
+# get the input and examples
+set data_dir $puzzle_dir/data
+mkdir $data_dir
 
-# TODO: download input and examples
+echo -n "• Downloading "(set_color blue)"puzzle input"(set_color normal)" to "(set_color -i cyan)"$data_dir/input..."(set_color normal)
+just get-input $day > $data_dir/input; or begin
+    echo "Error: Could not get puzzle input." 1>&2
+    exit 1
+end
+done
+
+echo -n "• Downloading "(set_color blue)"puzzle example"(set_color normal)" to "(set_color -i cyan)"$data_dir/example..."(set_color normal)
+just get-example $day > $data_dir/example; or begin
+    echo "Error: Could not get puzzle example." 1>&2
+    exit 1
+end
+done
+
+# boom, done
+echo (set_color -o magenta)"Good luck!"(set_color normal)
+

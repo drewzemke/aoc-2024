@@ -1,6 +1,15 @@
-## Built Using
+# 🎄 Advent of Code 2024! 🎄
 
-- Rust
-- Deno
-- Fish
+## Usage
+
+Set up a day's puzzle (from project root):
+```shell
+just setup <day_number>
+```
+
+## Required Tools
+
+- Rust toolchain
+- Deno 2.0
+- Fish shell
 - Just
