@@ -15,6 +15,6 @@ impl Puzzle for PuzzleDAYNUM {
     type PartB = PuzzleDAYNUMb;
 
     fn name() -> &'static str {
-        todo!()
+        "DAYNUM"
     }
 }

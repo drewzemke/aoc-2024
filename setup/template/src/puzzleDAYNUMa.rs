@@ -4,10 +4,10 @@ pub struct PuzzleDAYNUMa {}
 
 impl PuzzlePart for PuzzleDAYNUMa {
     fn description() -> &'static str {
-        todo!()
+        "Puzzle DAYNUM Part A"
     }
 
     fn solve(_input: &str) -> String {
-        todo!()
+        "Unsolved!".into()
     }
 }
