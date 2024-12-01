@@ -16,7 +16,7 @@ run day part="" arg="":
 
 @get-example day:
     cd setup/get-example && \
-    deno run -A get-example.ts 2023 {{day}}
+    deno run -A get-example.ts 2024 {{day}}
 
 @get-input day:
     setup/get-input/get-input.fish {{day}}

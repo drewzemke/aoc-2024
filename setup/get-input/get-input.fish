@@ -10,4 +10,4 @@ set cookie (cat setup/get-input/.session-cookie 2>/dev/null; or begin
     exit 1
 end)
 
-curl -s -H "Cookie: $cookie" https://adventofcode.com/2023/day/$argv[1]/input
+curl -s -H "Cookie: $cookie" https://adventofcode.com/2024/day/$argv[1]/input
