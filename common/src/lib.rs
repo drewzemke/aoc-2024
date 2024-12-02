@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use clap::{Parser, ValueEnum};
 use colored::Colorize;
 
@@ -63,7 +65,14 @@ pub trait Puzzle {
         let description = format!("\"{}\"", <P as PuzzlePart>::description()).dimmed();
         println!("{description}");
 
-        let res = <P as PuzzlePart>::solve(input);
-        println!("Solution: {}", res.magenta().bold());
+        let start_time = Instant::now();
+        let solution = <P as PuzzlePart>::solve(input);
+        let duration = start_time.elapsed();
+
+        println!(
+            "{} {}",
+            format!("Solution: {}", solution.magenta()).bold(),
+            format!("(in {})", format!("{duration:?}").green()).dimmed()
+        );
     }
 }
