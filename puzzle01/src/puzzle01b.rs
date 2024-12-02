@@ -1,5 +1,5 @@
 use crate::{count_occurrences, parse_two_lists};
-use common::puzzle::PuzzlePart;
+use common::PuzzlePart;
 
 pub struct Puzzle01b {}
 
