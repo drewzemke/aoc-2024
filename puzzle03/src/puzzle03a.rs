@@ -5,7 +5,7 @@ pub struct Puzzle03a {}
 
 impl PuzzlePart for Puzzle03a {
     fn description() -> &'static str {
-        "Sum the 'mul' expressions found in a bunch of strings"
+        "Sum the 'mul' expressions found in a corrupted string"
     }
 
     fn solve(input: &str) -> String {
