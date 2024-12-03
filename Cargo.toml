@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["common", "puzzle*"]
+members = ["common", "puzzles/*"]
 
 [workspace.dependencies]
 common = { path = "./common" }

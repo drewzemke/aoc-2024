@@ -18,7 +18,7 @@ set day $argv[1]
 set day_padded (printf "%02d" $day)
 
 set template_dir "setup/template"
-set puzzle_dir "puzzle$day_padded"
+set puzzle_dir "puzzles/$day_padded"
 
 echo "Setting up puzzle for "(set_color -o green)"Day $day"(set_color normal)
 
