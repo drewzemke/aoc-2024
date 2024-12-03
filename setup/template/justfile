@@ -9,3 +9,6 @@ run part="" arg="":
     test "{{arg}}" = "e" && set example --example
     test "{{arg}}" = "r" && set release --release
     cargo run --quiet $release -- $part $example
+
+test:
+    cargo test
