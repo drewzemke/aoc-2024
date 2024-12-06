@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 pub mod puzzle05a;
 pub mod puzzle05b;
 
@@ -17,6 +19,18 @@ impl Update {
         self.0
             .windows(2)
             .all(|w| pairs.iter().any(|pair| pair.0 == w[0] && pair.1 == w[1]))
+    }
+
+    pub fn sort_by(&mut self, pairs: &[OrderedPair]) {
+        self.0.sort_unstable_by(|x, y| {
+            if x == y {
+                Ordering::Equal
+            } else if pairs.iter().any(|pair| pair.0 == *x && pair.1 == *y) {
+                Ordering::Less
+            } else {
+                Ordering::Greater
+            }
+        })
     }
 }
 
