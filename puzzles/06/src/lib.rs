@@ -1,10 +1,12 @@
 use std::collections::HashSet;
 
+use common::grid::Grid;
+
 pub mod puzzle06a;
 pub mod puzzle06b;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-enum Tile {
+pub enum Tile {
     Nothing,
     Guard,
     Obstacle,
@@ -48,22 +50,27 @@ impl Dir {
     }
 }
 
-pub struct Grid(Vec<Vec<Tile>>);
+pub struct GuardGrid(Grid<Tile>);
 
-impl Grid {
-    pub fn parse(input: &str) -> (Grid, (i64, i64), Dir) {
-        let data = input
-            .lines()
-            .map(|line| line.chars().map(Tile::from).collect::<Vec<_>>())
-            .collect::<Vec<_>>();
+impl std::ops::Deref for GuardGrid {
+    type Target = Grid<Tile>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl GuardGrid {
+    pub fn parse(input: &str) -> (Self, (i64, i64), Dir) {
+        let grid = Grid::<Tile>::parse(input);
 
         // find the starting tile
-        let (row_idx, col_idx) = data
-            .iter()
+        let (row_idx, col_idx) = grid
+            .rows()
             .enumerate()
             .find_map(|(row_idx, row)| {
-                row.iter().enumerate().find_map(|(col_idx, tile)| {
-                    if *tile == Tile::Guard {
+                row.enumerate().find_map(|(col_idx, tile)| {
+                    if tile == Tile::Guard {
                         Some((row_idx, col_idx))
                     } else {
                         None
@@ -72,23 +79,11 @@ impl Grid {
             })
             .unwrap();
 
-        (Grid(data), (row_idx as i64, col_idx as i64), Dir::North)
-    }
-
-    fn at(&self, (row, col): (i64, i64)) -> Tile {
-        self.0[row as usize][col as usize]
-    }
-
-    fn height(&self) -> usize {
-        self.0.len()
-    }
-
-    fn width(&self) -> usize {
-        self.0[0].len()
-    }
-
-    fn is_in_bounds(&self, (row, col): (i64, i64)) -> bool {
-        row >= 0 && row < self.height() as i64 && col >= 0 && col < self.width() as i64
+        (
+            GuardGrid(grid),
+            (row_idx as i64, col_idx as i64),
+            Dir::North,
+        )
     }
 
     /// walk the grid from the starting point/direction, turning right
@@ -99,14 +94,14 @@ impl Grid {
 
         let mut pt = start;
         let mut dir = dir;
-        while self.is_in_bounds(pt) {
+        while self.contains(pt) {
             out.insert(pt);
 
             let step = dir.step();
             let mut next_pt = (pt.0 + step.0, pt.1 + step.1);
 
             // turn right if we're facing an obstacle
-            if self.is_in_bounds(next_pt) && self.at(next_pt) == Tile::Obstacle {
+            if self.contains(next_pt) && *self.at_unchecked(next_pt) == Tile::Obstacle {
                 dir.turn_right();
                 let step = dir.step();
                 next_pt = (pt.0 + step.0, pt.1 + step.1);

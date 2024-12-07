@@ -1,4 +1,4 @@
-use crate::Grid;
+use crate::GuardGrid;
 use common::puzzle::PuzzlePart;
 
 pub struct Puzzle06a {}
@@ -9,7 +9,7 @@ impl PuzzlePart for Puzzle06a {
     }
 
     fn solve(input: &str) -> String {
-        let (grid, start, dir) = Grid::parse(input);
+        let (grid, start, dir) = GuardGrid::parse(input);
 
         grid.walked_points(start, dir).len().to_string()
     }

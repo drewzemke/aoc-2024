@@ -1,5 +1,5 @@
-use crate::Grid;
-use common::puzzle::PuzzlePart;
+use crate::XmasGrid;
+use common::{grid::Grid, puzzle::PuzzlePart};
 
 pub struct Puzzle04a {}
 
@@ -20,7 +20,7 @@ impl PuzzlePart for Puzzle04a {
     }
 
     fn solve(input: &str) -> String {
-        let grid = Grid::parse(input);
+        let grid = XmasGrid::parse(input);
 
         PATTERNS
             .into_iter()
