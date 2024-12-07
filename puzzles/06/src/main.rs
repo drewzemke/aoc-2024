@@ -1,4 +1,4 @@
-use common::Puzzle;
+use common::puzzle::Puzzle;
 use puzzle06::{puzzle06a::Puzzle06a, puzzle06b::Puzzle06b};
 
 fn main() {

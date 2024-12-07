@@ -1,5 +1,5 @@
 use crate::Grid;
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle06a {}
 

@@ -1,5 +1,5 @@
 use crate::{parse_all_muls, Mul};
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle03a {}
 
