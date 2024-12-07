@@ -1,5 +1,5 @@
 use crate::Report;
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle02a {}
 

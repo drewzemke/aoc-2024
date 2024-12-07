@@ -1,5 +1,5 @@
 use crate::parse_input;
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle05b {}
 

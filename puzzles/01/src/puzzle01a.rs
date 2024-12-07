@@ -1,5 +1,5 @@
 use crate::parse_two_lists;
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle01a {}
 
