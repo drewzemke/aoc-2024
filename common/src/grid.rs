@@ -1,6 +1,6 @@
 #[derive(Debug)]
 /// Represents a 2D grid of tiles
-pub struct Grid<T>(Vec<Vec<T>>);
+pub struct Grid<T>(pub Vec<Vec<T>>);
 
 impl<T> Grid<T> {
     pub fn parse(input: &str) -> Grid<T>

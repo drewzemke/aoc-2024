@@ -1,13 +1,16 @@
+use crate::GuardGrid;
 use common::puzzle::PuzzlePart;
 
 pub struct Puzzle06b {}
 
 impl PuzzlePart for Puzzle06b {
     fn description() -> &'static str {
-        "Puzzle 06 Part B"
+        "Count the number of positions in which an added obstruction would cause the guard to walk in a loop."
     }
 
-    fn solve(_input: &str) -> String {
-        "Unsolved!".into()
+    fn solve(input: &str) -> String {
+        let (mut grid, start, dir) = GuardGrid::parse(input);
+
+        grid.too_many_obstacles(start, dir).to_string()
     }
 }
