@@ -33,8 +33,12 @@ echo -n "• Creating "(set_color blue)"directory "(set_color -i cyan)"$puzzle_d
 # process files: replace DAYNUM with the padded day number
 for file in $puzzle_dir/**
     if test -f $file
-        # replace content in files
-        sed -i '' "s/DAYNUM/$day_padded/g" $file
+        # replace content in files (differs based on OS)
+        if test (uname) = "Darwin"
+            sed -i '' "s/DAYNUM/$day_padded/g" $file
+        else
+            sed -i "s/DAYNUM/$day_padded/g" $file
+        end
 
         # rename files
         set new_name (echo $file | sed "s/DAYNUM/$day_padded/g")
