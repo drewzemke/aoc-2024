@@ -123,28 +123,21 @@ impl GuardGrid {
     pub fn loop_causing_obstacles(&self, start: (i64, i64), dir: Dir) -> usize {
         let mut obstacles: HashSet<(i64, i64)> = HashSet::new();
 
-        // used to test for looping
+        // used to test for looping after placing an obstacle
         let mut base_grid = self.clone();
 
-        for (pt, dir) in self.walk(start, dir) {
-            let step = dir.step();
-            let next_pt = (pt.0 + step.0, pt.1 + step.1);
-
-            if self.contains(next_pt)
-                && *self.at_unchecked(next_pt) != Tile::Obstacle
-                && !obstacles.contains(&next_pt)
-                && next_pt != start
-            {
+        for (pt, _) in self.walk(start, dir) {
+            if !obstacles.contains(&pt) && pt != start {
                 // put an obstacle at next point
-                base_grid.put(Tile::Obstacle, next_pt);
+                base_grid.put(Tile::Obstacle, pt);
 
                 // check if it loops with that new obstacle
-                if base_grid.will_it_loop(pt, dir) {
-                    obstacles.insert(next_pt);
+                if base_grid.will_it_loop(start, dir) {
+                    obstacles.insert(pt);
                 }
 
                 // restore the original
-                base_grid.put(Tile::Nothing, next_pt);
+                base_grid.put(Tile::Nothing, pt);
             }
         }
 
