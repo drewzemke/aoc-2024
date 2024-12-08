@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 /// Represents a 2D grid of tiles
 pub struct Grid<T>(pub Vec<Vec<T>>);
 
