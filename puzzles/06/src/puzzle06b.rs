@@ -9,8 +9,8 @@ impl PuzzlePart for Puzzle06b {
     }
 
     fn solve(input: &str) -> String {
-        let (mut grid, start, dir) = GuardGrid::parse(input);
+        let (grid, start, dir) = GuardGrid::parse(input);
 
-        grid.too_many_obstacles(start, dir).to_string()
+        grid.loop_causing_obstacles(start, dir).to_string()
     }
 }

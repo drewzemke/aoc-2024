@@ -11,6 +11,6 @@ impl PuzzlePart for Puzzle06a {
     fn solve(input: &str) -> String {
         let (grid, start, dir) = GuardGrid::parse(input);
 
-        grid.walk(start, dir).len().to_string()
+        grid.walked_points(start, dir).len().to_string()
     }
 }
