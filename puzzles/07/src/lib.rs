@@ -21,10 +21,30 @@ impl Equation {
 
         Equation { lhs, rhs }
     }
+
+    fn apply_ops(&self, ops: &[Op]) -> i64 {
+        let mut val = self.rhs[0];
+
+        for (idx, op) in ops.iter().enumerate() {
+            val = op.eval(val, self.rhs[idx + 1]);
+        }
+
+        val
+    }
+
+    pub fn is_equalable(&self, ops: &[Op]) -> bool {
+        for ops in Op::all_combos(ops, self.rhs.len() - 1) {
+            if self.lhs == self.apply_ops(&ops) {
+                return true;
+            }
+        }
+
+        false
+    }
 }
 
-#[derive(Clone, Debug)]
-enum Op {
+#[derive(Clone, Copy, Debug)]
+pub enum Op {
     Add,
     Mul,
     Concat,
@@ -38,6 +58,24 @@ impl Op {
             Op::Concat => left * (10_u32.pow(right.ilog10() + 1) as i64) + right,
         }
     }
+
+    pub fn all_combos(ops: &[Self], size: usize) -> Vec<Vec<Self>> {
+        if size == 0 {
+            return vec![vec![]];
+        }
+
+        let rest = Self::all_combos(ops, size - 1);
+
+        rest.iter()
+            .flat_map(|list| {
+                ops.iter().map(|op| {
+                    let mut list = list.clone();
+                    list.push(*op);
+                    list
+                })
+            })
+            .collect()
+    }
 }
 
 #[cfg(test)]
@@ -50,50 +88,5 @@ mod op_tests {
         assert_eq!(Op::Concat.eval(345, 12), 34512);
         assert_eq!(Op::Concat.eval(10, 1000), 101000);
         assert_eq!(Op::Concat.eval(1000, 1), 10001);
-    }
-}
-
-#[derive(Clone, Debug)]
-enum OpTree {
-    Leaf(i64),
-    Node {
-        op: Op,
-        left: Box<OpTree>,
-        right: Box<OpTree>,
-    },
-}
-
-impl OpTree {
-    pub fn eval(&self) -> i64 {
-        match self {
-            OpTree::Leaf(v) => *v,
-            OpTree::Node { op, left, right } => op.eval(left.eval(), right.eval()),
-        }
-    }
-
-    pub fn all_left_assoc_trees(vals: &[i64], ops: &[Op]) -> Vec<Self> {
-        if vals.is_empty() {
-            return vec![];
-        }
-
-        if vals.len() == 1 {
-            return vec![OpTree::Leaf(vals[0])];
-        }
-
-        let right = vals.last().unwrap();
-        let rest = &vals[..vals.len() - 1];
-
-        let rest_trees = OpTree::all_left_assoc_trees(rest, ops);
-
-        rest_trees
-            .iter()
-            .flat_map(|rest_tree| {
-                ops.iter().map(|op| OpTree::Node {
-                    op: op.clone(),
-                    left: Box::new(rest_tree.clone()),
-                    right: Box::new(OpTree::Leaf(*right)),
-                })
-            })
-            .collect()
     }
 }
