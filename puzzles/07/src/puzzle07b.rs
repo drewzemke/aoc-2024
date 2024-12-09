@@ -1,13 +1,26 @@
+use crate::{Equation, Op, OpTree};
 use common::puzzle::PuzzlePart;
 
 pub struct Puzzle07b {}
 
 impl PuzzlePart for Puzzle07b {
     fn description() -> &'static str {
-        "Puzzle 07 Part B"
+        "Sum the 'test' values that can be forms by adding/multiplying/concatting other numbers."
     }
 
-    fn solve(_input: &str) -> String {
-        "Unsolved!".into()
+    fn solve(input: &str) -> String {
+        let ops = vec![Op::Add, Op::Mul, Op::Concat];
+
+        input
+            .lines()
+            .map(Equation::parse)
+            .filter(|eqn| {
+                OpTree::all_left_assoc_trees(&eqn.rhs, &ops)
+                    .iter()
+                    .any(|tree| eqn.lhs == tree.eval())
+            })
+            .map(|eqn| eqn.lhs)
+            .sum::<i64>()
+            .to_string()
     }
 }
