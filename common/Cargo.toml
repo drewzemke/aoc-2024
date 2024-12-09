@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
 colored = "2.1.0"
+itertools = { workspace = true }

@@ -1,5 +1,6 @@
 use common::{grid::Grid, point::Point};
 use gcd::Gcd;
+use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 
 pub mod puzzle08a;
@@ -61,13 +62,10 @@ impl AntennaGrid {
         let mut out = HashSet::<Point>::new();
 
         for (_, ants) in antennae {
-            // iterate through all the pairs of antennae
-            for (idx, u) in ants.iter().enumerate() {
-                for v in &ants[idx + 1..] {
-                    let [a, b] = Self::simple_antinodes(u, v);
-                    out.insert(a);
-                    out.insert(b);
-                }
+            for pair in ants.iter().combinations(2) {
+                let [a, b] = Self::simple_antinodes(pair[0], pair[1]);
+                out.insert(a);
+                out.insert(b);
             }
         }
 
@@ -90,11 +88,9 @@ impl AntennaGrid {
         let mut out = HashSet::<Point>::new();
 
         for (_, ants) in antennae {
-            for (idx, u) in ants.iter().enumerate() {
-                for v in &ants[idx + 1..] {
-                    for node in self.general_antinodes(u, v) {
-                        out.insert(node);
-                    }
+            for pair in ants.iter().combinations(2) {
+                for node in self.general_antinodes(pair[0], pair[1]) {
+                    out.insert(node);
                 }
             }
         }
