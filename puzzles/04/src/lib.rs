@@ -1,4 +1,4 @@
-use common::grid::Grid;
+use common::{grid::Grid, point::Point};
 
 pub mod puzzle04a;
 pub mod puzzle04b;
@@ -19,11 +19,12 @@ impl XmasGrid {
         Self(Grid::parse(input))
     }
 
-    fn matches(&self, pattern: &Grid<char>, start: (usize, usize)) -> bool {
+    fn matches(&self, pattern: &Grid<char>, start: Point) -> bool {
         for row_offset in 0..pattern.height() {
             for col_offset in 0..pattern.width() {
-                let pattern_char = pattern.at((row_offset, col_offset));
-                let self_char = self.at((start.0 + row_offset, start.1 + col_offset));
+                let offset = (row_offset as i64, col_offset as i64).into();
+                let pattern_char = pattern.at(offset);
+                let self_char = self.at(start + offset);
 
                 if *pattern_char != '.' && pattern_char != self_char {
                     return false;
@@ -39,7 +40,7 @@ impl XmasGrid {
 
         for row in 0..=(self.height() - pattern.height()) {
             for col in 0..=(self.width() - pattern.width()) {
-                if self.matches(pattern, (row, col)) {
+                if self.matches(pattern, (row as i64, col as i64).into()) {
                     out += 1;
                 }
             }

@@ -1,3 +1,5 @@
+use crate::point::Point;
+
 #[derive(Clone, Debug)]
 /// Represents a 2D grid of tiles
 pub struct Grid<T>(pub Vec<Vec<T>>);
@@ -14,12 +16,12 @@ impl<T> Grid<T> {
         Self(data)
     }
 
-    pub fn at(&self, pt: (usize, usize)) -> &T {
-        &self.0[pt.0][pt.1]
+    pub fn at(&self, pt: Point) -> &T {
+        &self.0[pt.row as usize][pt.col as usize]
     }
 
-    pub fn at_unchecked(&self, pt: (i64, i64)) -> &T {
-        &self.0[pt.0 as usize][pt.1 as usize]
+    pub fn at_unchecked(&self, pt: Point) -> &T {
+        &self.0[pt.row as usize][pt.col as usize]
     }
 
     pub fn width(&self) -> usize {
@@ -30,7 +32,7 @@ impl<T> Grid<T> {
         self.0.len()
     }
 
-    pub fn contains(&self, (row, col): (i64, i64)) -> bool {
+    pub fn contains(&self, Point { row, col }: Point) -> bool {
         row >= 0 && row < self.height() as i64 && col >= 0 && col < self.width() as i64
     }
 
@@ -47,11 +49,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parse_number_grid() {
+    fn should_parse_number_grid() {
         let input = "12\n34\n56";
         let grid = Grid::<char>::parse(input);
 
-        assert_eq!(*grid.at((1, 1)), '4');
+        assert_eq!(*grid.at((1, 1).into()), '4');
         assert_eq!(grid.width(), 2);
         assert_eq!(grid.height(), 3);
     }

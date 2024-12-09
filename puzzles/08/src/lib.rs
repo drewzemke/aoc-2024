@@ -1,11 +1,9 @@
-use common::grid::Grid;
+use common::{grid::Grid, point::Point};
 use gcd::Gcd;
 use std::collections::{HashMap, HashSet};
 
 pub mod puzzle08a;
 pub mod puzzle08b;
-
-type Point = (i64, i64);
 
 #[derive(Debug, Clone, Copy)]
 enum Tile {
@@ -44,7 +42,7 @@ impl AntennaGrid {
         self.rows().enumerate().for_each(|(row_idx, row)| {
             row.enumerate().for_each(|(col_idx, tile)| {
                 if let Tile::Antenna(c) = tile {
-                    let pt = (row_idx as i64, col_idx as i64);
+                    let pt = (row_idx as i64, col_idx as i64).into();
                     match out.get_mut(&c) {
                         Some(vec) => vec.push(pt),
                         None => {
@@ -84,10 +82,7 @@ impl AntennaGrid {
     /// and
     ///   v - 2 (v - u) = 2u - v
     pub fn simple_antinodes(u: &Point, v: &Point) -> [Point; 2] {
-        [
-            (2 * u.0 - v.0, 2 * u.1 - v.1),
-            (2 * v.0 - u.0, 2 * v.1 - u.1),
-        ]
+        [v + v - u, u + u - v]
     }
 
     pub fn all_general_antinodes(&self) -> HashSet<Point> {
@@ -114,24 +109,24 @@ impl AntennaGrid {
         // we can find all grid points by computing the gcd of the x- and y-coords
         // of u-v, then marching by multiples of (u-v) / g starting from u in the directions
         // v and -v
-        let diff = (u.0 - v.0, u.1 - v.1);
-        let gcd = diff.0.unsigned_abs().gcd(diff.1.unsigned_abs()) as i64;
-        let step = (diff.0 / gcd, diff.1 / gcd);
+        let diff = u - v;
+        let gcd = diff.row.unsigned_abs().gcd(diff.col.unsigned_abs()) as i64;
+        let step = Point::from((diff.row / gcd, diff.col / gcd));
 
         let mut pt = *u;
 
         // march until we're outside the grid
         while self.contains(pt) {
             out.push(pt);
-            pt = (pt.0 + step.0, pt.1 + step.1);
+            pt = pt + step;
         }
 
         // do it in the other direction, but don't count u again
-        pt = (u.0 - step.0, u.1 - step.1);
+        pt = u - step;
 
         while self.contains(pt) {
             out.push(pt);
-            pt = (pt.0 - step.0, pt.1 - step.1);
+            pt = pt - step;
         }
 
         out
