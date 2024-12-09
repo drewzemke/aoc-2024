@@ -1,4 +1,4 @@
-use crate::{Equation, Op, OpTree};
+use crate::{Equation, Op};
 use common::puzzle::PuzzlePart;
 
 pub struct Puzzle07b {}
@@ -14,11 +14,7 @@ impl PuzzlePart for Puzzle07b {
         input
             .lines()
             .map(Equation::parse)
-            .filter(|eqn| {
-                OpTree::all_left_assoc_trees(&eqn.rhs, &ops)
-                    .iter()
-                    .any(|tree| eqn.lhs == tree.eval())
-            })
+            .filter(|eqn| eqn.is_equalable(&ops))
             .map(|eqn| eqn.lhs)
             .sum::<i64>()
             .to_string()
