@@ -1,10 +1,10 @@
 use common::puzzle::PuzzlePart;
 
-pub struct PuzzleDAYNUMb {}
+pub struct Puzzle07b {}
 
-impl PuzzlePart for PuzzleDAYNUMb {
+impl PuzzlePart for Puzzle07b {
     fn description() -> &'static str {
-        "Puzzle DAYNUM Part B"
+        "Puzzle 07 Part B"
     }
 
     fn solve(_input: &str) -> String {

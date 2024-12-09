@@ -1,4 +1,4 @@
-use common::Puzzle;
+use common::puzzle::Puzzle;
 use puzzleDAYNUM::{puzzleDAYNUMa::PuzzleDAYNUMa, puzzleDAYNUMb::PuzzleDAYNUMb};
 
 fn main() {
