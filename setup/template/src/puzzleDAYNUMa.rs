@@ -1,4 +1,4 @@
-use common::PuzzlePart;
+use common::puzzle::PuzzlePart;
 
 pub struct PuzzleDAYNUMa {}
 
