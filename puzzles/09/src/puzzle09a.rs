@@ -47,7 +47,6 @@ impl PuzzlePart for Puzzle09a {
                 let file_id = left_cursor / 2;
 
                 // for each block of the chunk, add (id * position)
-                // TODO: sum directly for a slight speed increase
                 for i in pos..pos + chunk_size {
                     // println!("left cursor: adding {block_id} * {i}");
                     checksum += i * file_id;
