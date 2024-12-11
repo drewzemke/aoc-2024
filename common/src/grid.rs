@@ -16,10 +16,22 @@ impl<T> Grid<T> {
         Self(data)
     }
 
+    pub fn parse_with<F>(input: &str, f: F) -> Grid<T>
+    where
+        F: FnMut(char) -> T + Copy,
+    {
+        let data = input
+            .lines()
+            .map(|line| line.chars().map(f).collect())
+            .collect();
+        Self(data)
+    }
+
     pub fn at(&self, pt: Point) -> &T {
         &self.0[pt.row as usize][pt.col as usize]
     }
 
+    // TODO: merge with above
     pub fn at_unchecked(&self, pt: Point) -> &T {
         &self.0[pt.row as usize][pt.col as usize]
     }
