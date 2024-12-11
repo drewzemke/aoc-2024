@@ -46,18 +46,19 @@ impl TrailGrid {
         Self(grid)
     }
 
-    pub fn trailhead_score_sum(&self) -> usize {
+    pub fn trailhead_count(&self, distinct: bool) -> u64 {
         let mut sum = 0;
 
         for (row_idx, row) in self.rows().enumerate() {
             for (col_idx, val) in row.enumerate() {
                 if val == 0 {
                     let start = (row_idx as i64, col_idx as i64).into();
-                    let result = self.trail_endpts(start, 0);
-                    // if !result.is_empty() {
-                    //     println!("{} trails found from {start:?}", result.len());
-                    // }
-                    sum += result.len();
+
+                    if distinct {
+                        sum += self.distinct_trails(start, 0);
+                    } else {
+                        sum += self.trail_endpts(start, 0).len() as u64;
+                    }
                 }
             }
         }
@@ -79,11 +80,28 @@ impl TrailGrid {
         for dir in Dir::all() {
             let neighbor = start + dir.step();
             if self.contains(neighbor) && *self.at(neighbor) == val + 1 {
-                // println!("- proceding {dir:?} from {start:?} to {neighbor:?}");
                 found.extend(self.trail_endpts(neighbor, val + 1));
             }
         }
 
         found
+    }
+
+    fn distinct_trails(&self, start: Point, val: u64) -> u64 {
+        // if this val is 9, there's only one way to get here
+        if val == 9 {
+            return 1;
+        }
+
+        let mut sum = 0;
+
+        for dir in Dir::all() {
+            let neighbor = start + dir.step();
+            if self.contains(neighbor) && *self.at(neighbor) == val + 1 {
+                sum += self.distinct_trails(neighbor, val + 1);
+            }
+        }
+
+        sum
     }
 }
