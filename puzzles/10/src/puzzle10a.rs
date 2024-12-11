@@ -6,10 +6,10 @@ pub struct Puzzle10a {}
 
 impl PuzzlePart for Puzzle10a {
     fn description() -> &'static str {
-        "Compute the sum of the scores of trailheads in a map."
+        "Compute the sum of the 'scores' of trailheads in a map."
     }
 
     fn solve(input: &str) -> String {
-        TrailGrid::parse(input).trailhead_score_sum().to_string()
+        TrailGrid::parse(input).trailhead_count(false).to_string()
     }
 }
