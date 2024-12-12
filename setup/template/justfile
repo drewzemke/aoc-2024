@@ -9,6 +9,13 @@ run part="" arg="":
     test "{{arg}}" = "e" && set example --example
     test "{{arg}}" = "r" && set release --release
     cargo run --quiet $release -- $part $example
+    # copy the result to the clipboard if this was 
+    # run on the actual input of just one part
+    test {{part}} && test "{{arg}}" != "e" && just copy {{part}} || exit 0
+
+copy part:
+    #!/usr/bin/env fish
+    ../../setup/copy-soln/copy.fish {{part}}
 
 test:
     cargo test

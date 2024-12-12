@@ -1,6 +1,6 @@
 use clap::{Parser, ValueEnum};
 use colored::Colorize;
-use std::time::Instant;
+use std::{fs, time::Instant};
 
 #[derive(ValueEnum, Clone)]
 enum PuzzlePartName {
@@ -73,5 +73,7 @@ pub trait Puzzle {
             format!("Solution: {}", solution.magenta()).bold(),
             format!("(in {})", format!("{duration:?}").green()).dimmed()
         );
+
+        fs::write(format!("data/soln-{}", part_name.to_lowercase()), solution).unwrap();
     }
 }
