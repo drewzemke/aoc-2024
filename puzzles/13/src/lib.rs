@@ -1,6 +1,8 @@
 pub mod puzzle13a;
 pub mod puzzle13b;
 
+const EMBIGGEN_FACTOR: i64 = 10_000_000_000_000;
+
 #[derive(Debug)]
 struct ClawMachine {
     button_a: (i64, i64),
@@ -37,9 +39,6 @@ impl ClawMachine {
     // expand that product to find a and b:
     //   a = (1/D) ( by*px - bx*py )
     //   b = (1/D) ( -ay*px + ax*py )
-    //
-    // also, we discard solutions (ie, return None) if either of a or b is not
-    //   an integer between 0 and 100
     pub fn solve(&self) -> Option<(i64, i64)> {
         let (ax, ay) = self.button_a;
         let (bx, by) = self.button_b;
@@ -51,22 +50,19 @@ impl ClawMachine {
         if a % det != 0 {
             return None;
         }
-
         let a = a / det;
-        if !(0..=100).contains(&a) {
-            return None;
-        }
 
         let b = -ay * px + ax * py;
         if b % det != 0 {
             return None;
         }
-
         let b = b / det;
-        if !(0..=100).contains(&b) {
-            return None;
-        }
 
         Some((a, b))
+    }
+
+    pub fn embiggen(&mut self) {
+        let (px, py) = self.prize;
+        self.prize = (EMBIGGEN_FACTOR + px, EMBIGGEN_FACTOR + py);
     }
 }
