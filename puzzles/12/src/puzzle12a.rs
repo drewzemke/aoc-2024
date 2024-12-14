@@ -5,7 +5,7 @@ pub struct Puzzle12a {}
 
 impl PuzzlePart for Puzzle12a {
     fn description() -> &'static str {
-        "Find the sum of the 'prices' (area * perimeter) of a bunch of regions of a grid"
+        "Find the sum of the 'prices' (area * perimeter) of a bunch of regions of a grid."
     }
 
     fn solve(input: &str) -> String {
