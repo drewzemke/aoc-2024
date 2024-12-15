@@ -54,7 +54,7 @@ impl TrailGrid {
 
         for dir in Dir::all() {
             let neighbor = start + dir.step();
-            if self.contains(neighbor) && *self.at(neighbor) == val + 1 {
+            if self.at(neighbor).is_some_and(|v| *v == val + 1) {
                 found.extend(self.trail_endpts(neighbor, val + 1));
             }
         }
@@ -72,7 +72,7 @@ impl TrailGrid {
 
         for dir in Dir::all() {
             let neighbor = start + dir.step();
-            if self.contains(neighbor) && *self.at(neighbor) == val + 1 {
+            if self.at(neighbor).is_some_and(|v| *v == val + 1) {
                 sum += self.distinct_trails(neighbor, val + 1);
             }
         }

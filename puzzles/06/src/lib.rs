@@ -161,7 +161,7 @@ impl<'a> Iterator for GuardGridWalker<'a> {
         let mut next_pt = self.pt + self.dir.step();
 
         // turn right until we're not facing an obstacle
-        while self.grid.contains(next_pt) && *self.grid.at_unchecked(next_pt) == Tile::Obstacle {
+        while self.grid.at(next_pt).is_some_and(|t| *t == Tile::Obstacle) {
             self.dir.turn_right();
             next_pt = self.pt + self.dir.step();
         }
