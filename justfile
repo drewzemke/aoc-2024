@@ -1,14 +1,16 @@
 set shell := ["fish", "-c"]
 
-# `part` can be 'a' or 'b' 
-# `arg` can be 'e' for example input
-#       or 'r' for release mode
-run day part="" arg="":
+# `arg1` can be:
+#   - 'a' or 'b' (part a or part b)
+#   - 'e'        (use example input)
+#   - 'r'        (run in release mode)
+# `arg2` can be 'e' or 'r' (same as above)
+run day arg1="" arg2="":
     #!/usr/bin/env fish
     set day (printf "%02d" {{day}})
-    test {{part}} && set part --part {{part}}
-    test "{{arg}}" = "e" && set example --example
-    test "{{arg}}" = "r" && set release --release
+    test "{{arg1}}" = "a" -o "{{arg1}}" = "b" && set part --part {{arg1}}
+    test "{{arg1}}" = "e" -o "{{arg2}}" = "e" && set example --example
+    test "{{arg1}}" = "r" -o "{{arg2}}" = "r" && set release --release
     cargo run --quiet --bin "puzzle$day" $release -- $part $example
 
 @setup day:
