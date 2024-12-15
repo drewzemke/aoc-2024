@@ -1,4 +1,4 @@
-use common::{grid::Grid, point::Point};
+use common::{dir::Dir, grid::Grid, point::Point};
 use std::collections::HashSet;
 
 pub mod puzzle06a;
@@ -22,32 +22,18 @@ impl From<char> for Tile {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Dir {
-    North,
-    South,
-    East,
-    West,
+trait TurnRight {
+    fn turn_right(&mut self);
 }
 
-impl Dir {
-    pub fn turn_right(&mut self) {
+impl TurnRight for Dir {
+    fn turn_right(&mut self) {
         *self = match self {
             Dir::North => Self::East,
             Dir::South => Self::West,
             Dir::East => Self::South,
             Dir::West => Self::North,
         }
-    }
-
-    pub fn step(&self) -> Point {
-        match self {
-            Dir::North => (-1, 0),
-            Dir::South => (1, 0),
-            Dir::East => (0, 1),
-            Dir::West => (0, -1),
-        }
-        .into()
     }
 }
 

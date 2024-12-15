@@ -1,34 +1,8 @@
+use common::{dir::Dir, grid::Grid, point::Point};
 use std::collections::HashSet;
-
-use common::{grid::Grid, point::Point};
 
 pub mod puzzle12a;
 pub mod puzzle12b;
-
-// TODO: move this to common!
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Dir {
-    North,
-    South,
-    East,
-    West,
-}
-
-impl Dir {
-    pub fn all() -> Vec<Self> {
-        vec![Self::North, Self::South, Self::East, Self::West]
-    }
-
-    pub fn step(&self) -> Point {
-        match self {
-            Dir::North => (-1, 0),
-            Dir::South => (1, 0),
-            Dir::East => (0, 1),
-            Dir::West => (0, -1),
-        }
-        .into()
-    }
-}
 
 #[derive(Debug)]
 pub struct GardenGrid(Grid<char>);
