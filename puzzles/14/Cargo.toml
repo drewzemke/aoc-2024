@@ -7,3 +7,4 @@ edition = "2021"
 nom = { workspace = true }
 common = { workspace = true }
 itertools = { workspace = true }
+image = "0.25.5"
