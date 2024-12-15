@@ -57,7 +57,9 @@ impl GardenGrid {
         // and recurse on that point
         for dir in Dir::all() {
             let neighbor = pt + dir.step();
-            if self.contains(neighbor) && *self.at(neighbor) == char && !visited.contains(&neighbor)
+            if self
+                .at(neighbor)
+                .is_some_and(|c| *c == char && !visited.contains(&neighbor))
             {
                 self.compute_region_from(&neighbor, char, rgn_pts, visited);
             }

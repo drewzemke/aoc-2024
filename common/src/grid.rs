@@ -27,13 +27,14 @@ impl<T> Grid<T> {
         Self(data)
     }
 
-    pub fn at(&self, pt: Point) -> &T {
-        &self.0[pt.row as usize][pt.col as usize]
-    }
-
-    // TODO: merge with above
-    pub fn at_unchecked(&self, pt: Point) -> &T {
-        &self.0[pt.row as usize][pt.col as usize]
+    pub fn at(&self, pt: Point) -> Option<&T> {
+        if pt.row < 0 || pt.col < 0 {
+            None
+        } else {
+            self.0
+                .get(pt.row as usize)
+                .and_then(|row| row.get(pt.col as usize))
+        }
     }
 
     pub fn width(&self) -> usize {
@@ -65,7 +66,7 @@ mod tests {
         let input = "12\n34\n56";
         let grid = Grid::<char>::parse(input);
 
-        assert_eq!(*grid.at((1, 1).into()), '4');
+        assert_eq!(grid.at((1, 1).into()), Some(&'4'));
         assert_eq!(grid.width(), 2);
         assert_eq!(grid.height(), 3);
     }

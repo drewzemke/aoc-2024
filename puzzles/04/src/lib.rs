@@ -23,8 +23,10 @@ impl XmasGrid {
         for row_offset in 0..pattern.height() {
             for col_offset in 0..pattern.width() {
                 let offset = (row_offset as i64, col_offset as i64).into();
-                let pattern_char = pattern.at(offset);
-                let self_char = self.at(start + offset);
+                let pattern_char = pattern.at(offset).expect("point should be in grid");
+                let self_char = self
+                    .at(start + offset)
+                    .expect("point should be in the grid");
 
                 if *pattern_char != '.' && pattern_char != self_char {
                     return false;
