@@ -1,18 +1,9 @@
-use common::{grid::Grid, point::Point};
+use common::{grid_def, grid::Grid, point::Point};
 
 pub mod puzzle04a;
 pub mod puzzle04b;
 
-#[derive(Debug)]
-pub struct XmasGrid(Grid<char>);
-
-impl std::ops::Deref for XmasGrid {
-    type Target = Grid<char>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+grid_def!(XmasGrid, char);
 
 impl XmasGrid {
     pub fn parse(input: &str) -> Self {
