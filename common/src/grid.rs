@@ -10,10 +10,10 @@ pub struct Grid<T>(pub Vec<Vec<T>>);
 macro_rules! grid_def {
     ($grid_name:ident, $tile_type:ty) => {
         #[derive(Clone, Debug)]
-        pub struct $grid_name(Grid<$tile_type>);
+        pub struct $grid_name(common::grid::Grid<$tile_type>);
 
         impl std::ops::Deref for $grid_name {
-            type Target = Grid<$tile_type>;
+            type Target = common::grid::Grid<$tile_type>;
 
             fn deref(&self) -> &Self::Target {
                 &self.0
