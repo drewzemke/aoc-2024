@@ -41,15 +41,34 @@ impl<T> Grid<T> {
         self.0.len()
     }
 
-    pub fn contains(&self, Point { row, col }: Point) -> bool {
-        row >= 0 && row < self.height() as i64 && col >= 0 && col < self.width() as i64
-    }
-
     pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = T> + '_> + '_
     where
         T: Clone,
     {
         self.0.iter().map(|row| row.iter().cloned())
+    }
+
+    pub fn contains(&self, Point { row, col }: Point) -> bool {
+        row >= 0 && row < self.height() as i64 && col >= 0 && col < self.width() as i64
+    }
+
+    pub fn find_pt(&self, pred: impl Fn(T) -> bool) -> Option<Point>
+    where
+        T: Clone,
+    {
+        self.rows().enumerate().find_map(|(row_idx, row)| {
+            row.enumerate().find_map(|(col_idx, tile)| {
+                if pred(tile) {
+                    Some((row_idx as i64, col_idx as i64).into())
+                } else {
+                    None
+                }
+            })
+        })
+    }
+
+    pub fn put(&mut self, that: T, here: Point) {
+        self.0[here.row as usize][here.col as usize] = that;
     }
 }
 
