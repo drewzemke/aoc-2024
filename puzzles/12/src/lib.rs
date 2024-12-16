@@ -1,19 +1,10 @@
-use common::{dir::Dir, grid::Grid, point::Point};
+use common::{dir::Dir, grid::Grid, grid_def, point::Point};
 use std::collections::HashSet;
 
 pub mod puzzle12a;
 pub mod puzzle12b;
 
-#[derive(Debug)]
-pub struct GardenGrid(Grid<char>);
-
-impl std::ops::Deref for GardenGrid {
-    type Target = Grid<char>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+grid_def!(GardenGrid, char);
 
 impl GardenGrid {
     pub fn parse(input: &str) -> Self {

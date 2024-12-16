@@ -4,6 +4,31 @@ use crate::point::Point;
 /// Represents a 2D grid of tiles
 pub struct Grid<T>(pub Vec<Vec<T>>);
 
+/// Defines a wrapped `Grid` with the given name and tile type,
+/// and implements some helper traits for the new type.
+#[macro_export]
+macro_rules! grid_def {
+    ($grid_name:ident, $tile_type:ty) => {
+        #[derive(Clone, Debug)]
+        pub struct $grid_name(Grid<$tile_type>);
+
+        impl std::ops::Deref for $grid_name {
+            type Target = Grid<$tile_type>;
+
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+
+        impl std::ops::DerefMut for $grid_name {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+    };
+}
+
+// TODO: more tests
 impl<T> Grid<T> {
     pub fn parse_with<F>(input: &str, f: F) -> Grid<T>
     where

@@ -1,4 +1,4 @@
-use common::{grid::Grid, point::Point};
+use common::{grid::Grid, grid_def, point::Point};
 use gcd::Gcd;
 use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
@@ -7,7 +7,7 @@ pub mod puzzle08a;
 pub mod puzzle08b;
 
 #[derive(Debug, Clone, Copy)]
-enum Tile {
+pub enum Tile {
     Nothing,
     Antenna(char),
 }
@@ -22,15 +22,7 @@ impl From<char> for Tile {
     }
 }
 
-struct AntennaGrid(Grid<Tile>);
-
-impl std::ops::Deref for AntennaGrid {
-    type Target = Grid<Tile>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+grid_def!(AntennaGrid, Tile);
 
 impl AntennaGrid {
     pub fn parse(input: &str) -> Self {

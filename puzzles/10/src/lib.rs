@@ -1,19 +1,10 @@
-use common::{dir::Dir, grid::Grid, point::Point};
+use common::{dir::Dir, grid::Grid, grid_def, point::Point};
 use std::collections::HashSet;
 
 pub mod puzzle10a;
 pub mod puzzle10b;
 
-#[derive(Debug)]
-pub struct TrailGrid(Grid<u64>);
-
-impl std::ops::Deref for TrailGrid {
-    type Target = Grid<u64>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+grid_def!(TrailGrid, u64);
 
 impl TrailGrid {
     pub fn parse(input: &str) -> Self {

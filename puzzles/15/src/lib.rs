@@ -1,4 +1,4 @@
-use common::{dir::Dir, grid::Grid, point::Point};
+use common::{dir::Dir, grid::Grid, grid_def, point::Point};
 
 pub mod puzzle15a;
 pub mod puzzle15b;
@@ -47,23 +47,7 @@ impl Tile {
     }
 }
 
-#[derive(Debug)]
-pub struct WarehouseGrid(Grid<Tile>);
-
-// TODO: can this be derived? or macrod?
-impl std::ops::Deref for WarehouseGrid {
-    type Target = Grid<Tile>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl std::ops::DerefMut for WarehouseGrid {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
+grid_def!(WarehouseGrid, Tile);
 
 impl WarehouseGrid {
     pub fn parse(input: &str) -> Self {

@@ -1,4 +1,4 @@
-use common::{dir::Dir, grid::Grid, point::Point};
+use common::{dir::Dir, grid::Grid, grid_def, point::Point};
 use std::collections::HashSet;
 
 pub mod puzzle06a;
@@ -37,22 +37,7 @@ impl TurnRight for Dir {
     }
 }
 
-#[derive(Clone)]
-pub struct GuardGrid(Grid<Tile>);
-
-impl std::ops::Deref for GuardGrid {
-    type Target = Grid<Tile>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl std::ops::DerefMut for GuardGrid {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
+grid_def!(GuardGrid, Tile);
 
 impl GuardGrid {
     pub fn parse(input: &str) -> (Self, Point, Dir) {
