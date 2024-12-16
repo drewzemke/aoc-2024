@@ -15,7 +15,6 @@ impl PuzzlePart for Puzzle15a {
         let instructions = Instructions::parse(instructions_str);
 
         grid.move_robot(instructions);
-
         grid.box_gps_coord_sum().to_string()
     }
 }
