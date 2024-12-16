@@ -5,17 +5,6 @@ use crate::point::Point;
 pub struct Grid<T>(pub Vec<Vec<T>>);
 
 impl<T> Grid<T> {
-    pub fn parse(input: &str) -> Grid<T>
-    where
-        T: From<char>,
-    {
-        let data = input
-            .lines()
-            .map(|line| line.chars().map(T::from).collect())
-            .collect();
-        Self(data)
-    }
-
     pub fn parse_with<F>(input: &str, f: F) -> Grid<T>
     where
         F: FnMut(char) -> T + Copy,
@@ -25,6 +14,13 @@ impl<T> Grid<T> {
             .map(|line| line.chars().map(f).collect())
             .collect();
         Self(data)
+    }
+
+    pub fn parse(input: &str) -> Grid<T>
+    where
+        T: From<char>,
+    {
+        Self::parse_with(input, T::from)
     }
 
     pub fn at(&self, pt: Point) -> Option<&T> {
@@ -57,6 +53,25 @@ impl<T> Grid<T> {
     }
 }
 
+impl<T> std::fmt::Display for Grid<T>
+where
+    T: Into<char> + Clone,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for (idx, row) in self.rows().enumerate() {
+            for tile in row {
+                let c: char = tile.into();
+                f.write_str(&c.to_string())?;
+            }
+            if idx < self.height() - 1 {
+                f.write_str(&'\n'.to_string())?;
+            }
+        }
+
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -69,5 +84,6 @@ mod tests {
         assert_eq!(grid.at((1, 1).into()), Some(&'4'));
         assert_eq!(grid.width(), 2);
         assert_eq!(grid.height(), 3);
+        assert_eq!(grid.to_string(), input)
     }
 }

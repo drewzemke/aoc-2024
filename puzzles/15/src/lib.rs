@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use common::{dir::Dir, grid::Grid, point::Point};
 
 pub mod puzzle15a;
@@ -61,21 +59,6 @@ impl std::ops::Deref for WarehouseGrid {
     }
 }
 
-// TODO: extract to `Grid`, then derive from here?
-impl Display for WarehouseGrid {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for row in self.rows() {
-            for tile in row {
-                let c: char = tile.into();
-                f.write_str(&c.to_string())?;
-            }
-            f.write_str(&'\n'.to_string())?;
-        }
-
-        Ok(())
-    }
-}
-
 impl WarehouseGrid {
     pub fn parse(input: &str) -> Self {
         Self(Grid::parse(input))
@@ -98,7 +81,7 @@ impl WarehouseGrid {
             .unwrap();
 
         // println!("start at {robot_pos:?}");
-        // println!("{self}");
+        // println!("{}", self.0);
 
         for dir in &instructions.0 {
             // println!("\nMoving {dir:?}");
@@ -111,7 +94,7 @@ impl WarehouseGrid {
             if advance {
                 robot_pos = next_pt;
             }
-            // println!("now at {robot_pos:?}\n{self}");
+            // println!("now at {robot_pos:?}\n{}", self.0);
         }
     }
 
