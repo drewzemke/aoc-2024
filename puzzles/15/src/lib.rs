@@ -59,26 +59,19 @@ impl std::ops::Deref for WarehouseGrid {
     }
 }
 
+impl std::ops::DerefMut for WarehouseGrid {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
 impl WarehouseGrid {
     pub fn parse(input: &str) -> Self {
         Self(Grid::parse(input))
     }
 
     pub fn move_robot(&mut self, instructions: Instructions) {
-        // TODO: extract a "find" function for grid
-        let mut robot_pos: Point = self
-            .rows()
-            .enumerate()
-            .find_map(|(row_idx, row)| {
-                row.enumerate().find_map(|(col_idx, tile)| {
-                    if tile == Tile::Robot {
-                        Some((row_idx as i64, col_idx as i64).into())
-                    } else {
-                        None
-                    }
-                })
-            })
-            .unwrap();
+        let mut robot_pos = self.find_pt(|t| t == Tile::Robot).unwrap();
 
         // println!("start at {robot_pos:?}");
         // println!("{}", self.0);
@@ -208,11 +201,6 @@ impl WarehouseGrid {
             .collect();
 
         self.0 .0 = big_tiles;
-    }
-
-    // TODO: extract to `Grid`
-    fn put(&mut self, that: Tile, here: Point) {
-        self.0 .0[here.row as usize][here.col as usize] = that;
     }
 
     /// the "gps coordinate" of a box is 100 times its distance from the top

@@ -48,30 +48,17 @@ impl std::ops::Deref for GuardGrid {
     }
 }
 
+impl std::ops::DerefMut for GuardGrid {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
 impl GuardGrid {
     pub fn parse(input: &str) -> (Self, Point, Dir) {
         let grid = Grid::<Tile>::parse(input);
-
-        // find the starting tile
-        let (row_idx, col_idx) = grid
-            .rows()
-            .enumerate()
-            .find_map(|(row_idx, row)| {
-                row.enumerate().find_map(|(col_idx, tile)| {
-                    if tile == Tile::Guard {
-                        Some((row_idx, col_idx))
-                    } else {
-                        None
-                    }
-                })
-            })
-            .unwrap();
-
-        (
-            GuardGrid(grid),
-            (row_idx as i64, col_idx as i64).into(),
-            Dir::North,
-        )
+        let start = grid.find_pt(|t| t == Tile::Guard).unwrap();
+        (GuardGrid(grid), start, Dir::North)
     }
 
     fn walk(&self, start: Point, dir: Dir) -> impl Iterator<Item = (Point, Dir)> + '_ {
@@ -98,10 +85,6 @@ impl GuardGrid {
         }
 
         false
-    }
-
-    fn put(&mut self, that: Tile, here: Point) {
-        self.0 .0[here.row as usize][here.col as usize] = that;
     }
 
     /// computes all obstacles that, if added (individually) to the grid,
