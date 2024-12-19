@@ -1,0 +1,23 @@
+set shell := ["fish", "-c"]
+
+# `arg1` can be:
+#   - 'a' or 'b' (part a or part b)
+#   - 'e'        (use example input)
+#   - 'r'        (run in release mode)
+# `arg2` can be 'e' or 'r' (same as above)
+run arg1="" arg2="":
+    #!/usr/bin/env fish
+    test "{{arg1}}" = "a" -o "{{arg1}}" = "b" && set part --part {{arg1}}
+    test "{{arg1}}" = "e" -o "{{arg2}}" = "e" && set example --example
+    test "{{arg1}}" = "r" -o "{{arg2}}" = "r" && set release --release
+    cargo run --quiet $release -- $part $example
+    # copy the result to the clipboard if this was 
+    # run on the actual input of just one part
+    test "$part" && test "{{arg2}}" != "e" && just copy {{arg1}} || exit 0
+
+copy part:
+    #!/usr/bin/env fish
+    ../../setup/copy-soln/copy.fish {{part}}
+
+test:
+    cargo test
