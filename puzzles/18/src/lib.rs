@@ -22,14 +22,14 @@ impl From<Tile> for char {
 
 grid_def!(ByteGrid, Tile);
 
+pub fn make_coords(line: &str) -> Option<(i64, i64)> {
+    let (rows_str, cols_str) = line.split_once(',')?;
+    Some((rows_str.parse::<i64>().ok()?, cols_str.parse::<i64>().ok()?))
+}
+
 impl ByteGrid {
     pub fn parse(input: &str, max_bytes: usize) -> Option<Self> {
         let mut lines = input.lines();
-
-        let make_coords = |line: &str| {
-            let (rows_str, cols_str) = line.split_once(',')?;
-            Some((rows_str.parse::<i64>().ok()?, cols_str.parse::<i64>().ok()?))
-        };
 
         // the first line has the size
         let (num_rows, num_cols) = lines.next().and_then(make_coords)?;
@@ -59,13 +59,17 @@ impl ByteGrid {
         Some(Self(Grid(grid)))
     }
 
+    pub fn add_byte(&mut self, pt: Point) {
+        self.put(Tile::Byte, pt);
+    }
+
     // TODO: try A*?
-    pub fn least_steps(&self, from: Point, to: Point) -> usize {
+    pub fn least_steps(&self, start: Point, end: Point) -> Option<usize> {
         let mut least_step_map = HashMap::<Point, usize>::new();
 
-        self.explore(from, 0, &mut least_step_map);
+        self.explore(start, 0, &mut least_step_map);
 
-        *least_step_map.get(&to).unwrap()
+        least_step_map.get(&end).cloned()
     }
 
     // dumb algorithm that just checks in every possible direction, updating the map if we

@@ -18,10 +18,8 @@ impl PuzzlePart for Puzzle18a {
 
         let grid = ByteGrid::parse(input, max_bytes).unwrap();
 
-        grid.least_steps(
-            (0, 0).into(),
-            (grid.height() as i64 - 1, grid.width() as i64 - 1).into(),
-        )
-        .to_string()
+        let start = (0, 0).into();
+        let end = (grid.height() as i64 - 1, grid.width() as i64 - 1).into();
+        grid.least_steps(start, end).unwrap().to_string()
     }
 }
