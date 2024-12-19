@@ -9,7 +9,7 @@ fn debug(s: &str) {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Computer {
     reg_a: i64,
     reg_b: i64,
@@ -203,5 +203,43 @@ impl Computer {
         }
 
         debug("-------------");
+    }
+
+    /// Runs the specific program given by:
+    ///   2,4,1,3,7,5,0,3,1,5,4,1,5,5,3,0
+    /// and checks if the output is equal to the program itself
+    ///
+    /// NOTE: this program follows a compute/output/jump loop that is calculable
+    /// from the initial A register only; the logic here is very specific to the
+    /// input puzzle
+    pub fn has_output(&self, target: &[u8]) -> bool {
+        let mut a = self.reg_a;
+        let mut idx = 0;
+        let mut output = vec![];
+
+        loop {
+            if a == 0 {
+                break;
+            }
+
+            // from analyzing the program, we can directly compute the output at the end of
+            // one loop iteration. it's:
+            //   ( (a % 8) △ 6 △ (a / 2 ^ (3 △ (a % 8))) ) % 8
+            let a_mod_8 = a % 8;
+            let out = (a_mod_8 ^ 6 ^ (a / 2i64.pow(3 ^ a_mod_8 as u32))) % 8;
+
+            // check if this output matches the program at the current index
+            if target[idx] as i64 != out {
+                return false;
+            }
+            output.push(out as u8);
+            idx += 1;
+
+            // during the loop, a is replaced by a/8;
+            a /= 8;
+        }
+
+        // if we got here, and the next index would be just off the end of the program, we win!
+        idx == target.len()
     }
 }
