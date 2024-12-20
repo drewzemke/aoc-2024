@@ -15,23 +15,21 @@ impl PuzzlePart for Puzzle17b {
     fn solve(input: &str) -> String {
         let mut computer = Computer::parse(input).unwrap();
 
-        let target = &computer.program[4..];
+        // the program has 16 elements, so we'll start at the last one and work our way forwards
+        let start_idx = 15;
+        let target = &computer.program[start_idx..];
 
-        // start at 8^11, since we're initially trying to match a sequence of length 12,
-        // and we divide by 8 between iterations
-        // (this takes quite a while to run, so go get a snack or something)
-        computer.reg_a = 8589934592;
-
-        // starting here makes it finish immediately but its' sorta cheating because
-        // I found this value experimentally
-        // (or maybe it isn't because it took me several hours of tinkering and experimenting)
-        // computer.reg_a = 52770590484;
+        // start with A at 0 and increase until we find a program that outputs the last
+        // element of the program.
+        // if we find one, check all "preimages" under integer division by 8 for a value of A
+        // that yields the last two elements of the program, then repeat
+        computer.reg_a = 0;
 
         loop {
             computer.reg_a += 1;
 
             if computer.has_output(target) {
-                if let Some(res) = check_preimages(&computer, 3, computer.reg_a) {
+                if let Some(res) = check_preimages(&computer, start_idx - 1, computer.reg_a) {
                     break res.to_string();
                 }
             }
