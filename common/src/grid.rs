@@ -1,5 +1,7 @@
 use crate::point::Point;
 
+mod a_star;
+
 #[derive(Clone, Debug)]
 /// Represents a 2D grid of tiles
 pub struct Grid<T>(pub Vec<Vec<T>>);
