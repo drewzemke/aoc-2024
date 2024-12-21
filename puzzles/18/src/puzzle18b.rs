@@ -1,7 +1,7 @@
 use crate::{make_coords, ByteGrid};
 use common::{point::Point, puzzle::PuzzlePart};
 
-pub struct Puzzle18b  {}
+pub struct Puzzle18b {}
 
 impl PuzzlePart for Puzzle18b {
     fn description() -> &'static str {
@@ -31,7 +31,7 @@ impl PuzzlePart for Puzzle18b {
         for pt in remaining_pts {
             grid.add_byte(pt);
 
-            if grid.least_steps(from, to).is_none() {
+            if grid.a_star(from, to).is_none() {
                 return format!("{},{}", pt.row, pt.col);
             }
         }

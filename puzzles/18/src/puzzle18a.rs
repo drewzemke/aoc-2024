@@ -20,6 +20,6 @@ impl PuzzlePart for Puzzle18a {
 
         let start = (0, 0).into();
         let end = (grid.height() as i64 - 1, grid.width() as i64 - 1).into();
-        grid.least_steps(start, end).unwrap().to_string()
+        (grid.a_star(start, end).unwrap().len() - 1).to_string()
     }
 }
