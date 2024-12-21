@@ -1,4 +1,4 @@
-use crate::{make_coords, ByteGrid};
+use crate::{make_coords, ByteGrid, Tile};
 use common::{point::Point, puzzle::PuzzlePart};
 
 pub struct Puzzle18b {}
@@ -31,7 +31,7 @@ impl PuzzlePart for Puzzle18b {
         for pt in remaining_pts {
             grid.add_byte(pt);
 
-            if grid.a_star(from, to).is_none() {
+            if grid.shortest_path(from, to, |t| *t != Tile::Byte).is_none() {
                 return format!("{},{}", pt.row, pt.col);
             }
         }

@@ -1,4 +1,4 @@
-use crate::ByteGrid;
+use crate::{ByteGrid, Tile};
 use common::puzzle::PuzzlePart;
 
 pub struct Puzzle18a {}
@@ -20,6 +20,11 @@ impl PuzzlePart for Puzzle18a {
 
         let start = (0, 0).into();
         let end = (grid.height() as i64 - 1, grid.width() as i64 - 1).into();
-        (grid.a_star(start, end).unwrap().len() - 1).to_string()
+        (grid
+            .shortest_path(start, end, |t| *t != Tile::Byte)
+            .unwrap()
+            .len()
+            - 1)
+        .to_string()
     }
 }
