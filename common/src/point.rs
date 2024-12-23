@@ -4,7 +4,7 @@
 /// The coordinates of `Point` use matrix conventions *(row, col)*
 /// rather than cartesian *(x,y)*, so increasing the second coordinate is
 /// generally considered as moving downwards.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Point {
     pub row: i64,
     pub col: i64,
