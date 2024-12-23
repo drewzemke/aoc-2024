@@ -12,14 +12,14 @@ impl PuzzlePart for Puzzle23a {
     fn solve(input: &str) -> String {
         let graph = Network::parse(input).unwrap();
 
-        (graph
-            .k3_subgraphs()
+        let mut subgraphs = graph.complete_subgraphs();
+
+        subgraphs
+            .nth(3) // size 3 subgraphs
+            .unwrap()
             .iter()
             .filter(|nodes| nodes.iter().any(|node| node.starts_with('t')))
             .count()
-            // divide by 3! = 6 since we over-counted
-            // (don't worry I'll fix in part b)
-            / 6)
-        .to_string()
+            .to_string()
     }
 }
