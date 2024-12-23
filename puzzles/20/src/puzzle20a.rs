@@ -1,6 +1,5 @@
 use crate::{Racetrack, Tile};
-use common::{point::Point, puzzle::PuzzlePart};
-use std::collections::HashMap;
+use common::puzzle::PuzzlePart;
 
 pub struct Puzzle20a {}
 
@@ -18,24 +17,10 @@ impl PuzzlePart for Puzzle20a {
         let end = grid.find_pt(|t| t == Tile::End).unwrap();
 
         let path = grid.shortest_path(start, end, Tile::is_space).unwrap();
+        let cheats = grid.cheats(&path, 2);
 
-        let path_indices: HashMap<Point, usize> =
-            path.iter().enumerate().map(|(i, p)| (*p, i)).collect();
-
-        let cheats = grid.small_cheats(&path);
-
-        cheats
-            .iter()
-            .filter_map(|(p1, p2)| {
-                let i1 = path_indices[p1];
-                let i2 = path_indices[p2];
-
-                if i1 > i2 {
-                    None
-                } else {
-                    Some(i2 - i1 - 2)
-                }
-            })
+        grid.savings(&path, cheats)
+            .into_iter()
             .filter(|s| *s >= threshold)
             .count()
             .to_string()

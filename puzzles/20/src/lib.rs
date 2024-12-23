@@ -1,4 +1,5 @@
-use common::{dir::Dir, grid::Grid, grid_def, point::Point};
+use common::{grid::Grid, grid_def, point::Point};
+use std::collections::{HashMap, HashSet};
 
 pub mod puzzle20a;
 pub mod puzzle20b;
@@ -31,36 +32,55 @@ impl Tile {
 
 grid_def!(Racetrack, Tile);
 
+pub type Cheat = (Point, Point, i64);
+
 impl Racetrack {
     pub fn parse(input: &str) -> Self {
         Racetrack(Grid::parse(input))
     }
 
-    /// A "small cheat" is two points on the track (ie. not walls)
-    /// that are exactly distance 2 from each other in the grid,
-    /// with a piece of wall between them
-    pub fn small_cheats(&self, path: &[Point]) -> Vec<(Point, Point)> {
-        // strat: check every point along the path. from each point, look in every possible
-        // direction that there could be to find a cheat from here; if there
-        // is a wall on either of two spaces between the two cheats, add it to the set
-        let mut out = Vec::<(Point, Point)>::new();
+    /// A "cheat" is two points on the track (ie. not walls)
+    /// that are at most manhattan-distance D from each other in the grid,
+    pub fn cheats(&self, path: &[Point], max_dist: i64) -> Vec<Cheat> {
+        let mut out = HashSet::<Cheat>::new();
 
         for pt in path {
-            for dir in Dir::all() {
-                let step1 = pt + dir.step();
-                if self.at(step1).is_some_and(Tile::is_space) {
-                    continue;
+            // a walk for manhattan-distance-at-most-20 in the grid consists
+            // of walking horizontally for N steps and then vertically
+            // for M-N steps, where 0 <= N <= M and 0 <= M <= max_dist
+            for h_dir in [1, -1] {
+                for v_dir in [1, -1] {
+                    for m in 2..=max_dist {
+                        for n in 0..=m {
+                            let new_pt = pt + Point::from((v_dir * n, h_dir * (m - n)));
+                            if self.at(new_pt).is_some_and(Tile::is_space) {
+                                out.insert((*pt, new_pt, m));
+                            }
+                        }
+                    }
                 }
-
-                let step2 = step1 + dir.step();
-                if !self.at(step2).is_some_and(Tile::is_space) {
-                    continue;
-                }
-
-                out.push((*pt, step2));
             }
         }
 
-        out
+        out.into_iter().collect()
+    }
+
+    pub fn savings(&self, path: &[Point], cheats: Vec<Cheat>) -> Vec<usize> {
+        let path_indices: HashMap<Point, usize> =
+            path.iter().enumerate().map(|(i, p)| (*p, i)).collect();
+
+        cheats
+            .iter()
+            .filter_map(|(p1, p2, skipped)| {
+                let i1 = path_indices[p1];
+                let i2 = path_indices[p2];
+
+                if i1 > i2 {
+                    None
+                } else {
+                    Some(i2 - i1 - *skipped as usize)
+                }
+            })
+            .collect()
     }
 }
