@@ -7,3 +7,4 @@ edition = "2021"
 nom = { workspace = true }
 common = { workspace = true }
 itertools = { workspace = true }
+rayon = "1.10.0"
