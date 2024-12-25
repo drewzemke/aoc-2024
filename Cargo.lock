@@ -892,6 +892,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "puzzle21"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "itertools 0.13.0",
+ "nom",
+]
+
+[[package]]
 name = "puzzle22"
 version = "0.1.0"
 dependencies = [
