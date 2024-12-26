@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use common::point::Point;
 
 pub mod puzzle21a;
@@ -19,7 +21,7 @@ impl From<char> for NumpadButton {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DirpadButton {
     Up,
     Down,
@@ -134,7 +136,7 @@ impl NumpadButton {
     /// `layers`=1  is using dirpad controlling the numpad controller
     /// `layers`=2  is using dirpad controlling a dirpad controlling the numpad controller
     /// ... and so on
-    pub fn seq_to_press(seq: &[Self], layers: usize) -> Vec<DirpadButton> {
+    pub fn num_buttons_to_press(seq: &[Self], layers: usize, memo: &mut Memo) -> usize {
         let mut cursor = Self::Act;
         let dirpad_buttons = seq
             .iter()
@@ -145,10 +147,20 @@ impl NumpadButton {
             })
             .collect::<Vec<_>>();
 
-        // ignoring the case where layers=0, pass this list to the DirpadButton impl
-        DirpadButton::seq_to_press(&dirpad_buttons, layers - 1)
+        let dirpad_cursors = vec![DirpadButton::Act; layers];
+        let (num_buttons, _) =
+            dirpad_buttons
+                .iter()
+                .fold((0, dirpad_cursors), |(prev_num, prev_cursors), button| {
+                    let (new_num, new_cursors) =
+                        DirpadButton::num_buttons_to_press(button, prev_cursors, layers - 1, memo);
+                    (prev_num + new_num, new_cursors)
+                });
+        num_buttons
     }
 }
+
+type Memo = HashMap<(DirpadButton, Vec<DirpadButton>, usize), (usize, Vec<DirpadButton>)>;
 
 impl DirpadButton {
     /// The dirpad looks like this:
@@ -196,21 +208,40 @@ impl DirpadButton {
             .collect()
     }
 
-    fn seq_to_press(seq: &[Self], layers: usize) -> Vec<DirpadButton> {
-        if layers == 0 {
-            return seq.to_vec();
+    fn num_buttons_to_press(
+        button: &Self,
+        mut cursors: Vec<Self>,
+        layer: usize,
+        memo: &mut Memo,
+    ) -> (usize, Vec<DirpadButton>) {
+        if layer == 0 {
+            return (1, cursors.clone());
         }
 
-        let mut cursor = Self::Act;
-        let dirpad_buttons = seq
-            .iter()
-            .flat_map(|numpad_button| {
-                let dir_buttons = Self::dir_buttons_to_press(&cursor, numpad_button);
-                cursor = *numpad_button;
-                dir_buttons
-            })
-            .collect::<Vec<_>>();
+        if let Some(p) = memo.get(&(*button, cursors.clone(), layer - 1)) {
+            return p.clone();
+        }
 
-        Self::seq_to_press(&dirpad_buttons, layers - 1)
+        let cursors_before = cursors.clone();
+        let dirpad_buttons = Self::dir_buttons_to_press(&cursors[layer], button);
+        cursors[layer] = *button;
+
+        let cursors_prefix = cursors[0..layer].to_vec();
+        let (num_buttons, new_cursors) =
+            dirpad_buttons
+                .iter()
+                .fold((0, cursors_prefix), |(prev_num, prev_cursors), button| {
+                    let (new_num, new_cursors) =
+                        DirpadButton::num_buttons_to_press(button, prev_cursors, layer - 1, memo);
+                    (new_num + prev_num, new_cursors)
+                });
+
+        cursors[0..layer].copy_from_slice(&new_cursors);
+        memo.insert(
+            (*button, cursors_before.clone(), layer - 1),
+            (num_buttons, cursors.clone()),
+        );
+
+        (num_buttons, cursors)
     }
 }
