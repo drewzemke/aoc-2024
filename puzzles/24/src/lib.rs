@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, fmt::Display};
 
 pub mod puzzle24a;
 pub mod puzzle24b;
@@ -162,13 +162,21 @@ impl<'a> Device<'a> {
         }
     }
 
+    pub fn inputs(&self) -> (usize, usize) {
+        (self.wire_value('x'), self.wire_value('y'))
+    }
+
     pub fn output(&self) -> usize {
-        // get all of the wires whose names start with 'z', sort them by name,
-        // then parse their as a binary number
+        self.wire_value('z')
+    }
+
+    fn wire_value(&self, c: char) -> usize {
+        // get all of the wires whose names start with the char `c`,
+        // sort them by name, then parse their values as a binary number
         let mut z_wires = self
             .wires
             .iter()
-            .filter(|w| w.name.starts_with('z'))
+            .filter(|w| w.name.starts_with(c))
             .collect::<Vec<_>>();
 
         z_wires.sort_by_cached_key(|w| w.name);
@@ -184,5 +192,88 @@ impl<'a> Device<'a> {
                 }
             })
             .sum()
+    }
+
+    pub fn tree_for_output(&self, output: &'a str) -> OpTree<'a> {
+        let idx = self.wires.iter().position(|w| w.name == output).unwrap();
+        self.tree_for_output_index(idx)
+    }
+
+    fn tree_for_output_index(&self, output: usize) -> OpTree<'a> {
+        if self.inputs.iter().any(|i| i.output == output) {
+            OpTree::Input(self.wires[output].name)
+        } else {
+            let gate = self.gates.iter().find(|g| g.output == output).unwrap();
+            let left = self.tree_for_output_index(gate.input.0);
+            let right = self.tree_for_output_index(gate.input.1);
+            OpTree::Node {
+                op: gate.op.clone(),
+                left: Box::new(left),
+                right: Box::new(right),
+            }
+        }
+    }
+
+    pub fn swap_outputs(&mut self, left: &str, right: &str) {
+        let left_idx = self.wires.iter().position(|w| w.name == left).unwrap();
+        let right_idx = self.wires.iter().position(|w| w.name == right).unwrap();
+        let left_gate_idx = self
+            .gates
+            .iter()
+            .position(|g| g.output == left_idx)
+            .unwrap();
+        let right_gate_idx = self
+            .gates
+            .iter()
+            .position(|g| g.output == right_idx)
+            .unwrap();
+
+        self.gates[left_gate_idx].output = right_idx;
+        self.gates[right_gate_idx].output = left_idx;
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum OpTree<'a> {
+    Node {
+        op: Op,
+        left: Box<OpTree<'a>>,
+        right: Box<OpTree<'a>>,
+    },
+    Input(&'a str),
+}
+
+impl<'a> OpTree<'a> {
+    fn leftmost_leaf(&'a self) -> &'a str {
+        match self {
+            OpTree::Input(name) => name,
+            OpTree::Node { left, .. } => left.leftmost_leaf(),
+        }
+    }
+
+    pub fn sort_nodes(&mut self) {
+        if let OpTree::Node { left, right, .. } = self {
+            left.sort_nodes();
+            right.sort_nodes();
+            if left.leftmost_leaf() > right.leftmost_leaf() {
+                (*left, *right) = (right.clone(), left.clone());
+            }
+        }
+    }
+}
+
+impl<'a> Display for OpTree<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            OpTree::Input(name) => f.write_str(name),
+            OpTree::Node { op, left, right } => {
+                let op_str = match op {
+                    Op::And => "^",
+                    Op::Or => "v",
+                    Op::Xor => "∆",
+                };
+                f.write_str(&(format!("({left} {op_str} {right})")))
+            }
+        }
     }
 }
