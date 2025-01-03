@@ -22,3 +22,8 @@ run day arg1="" arg2="":
 
 @get-input day:
     setup/get-input/get-input.fish {{day}}
+
+@get-all-inputs:
+    #!/usr/bin/env fish
+    for N in (seq 1 9); just get-input $N > ./puzzles/0$N/data/input; end
+    for N in (seq 10 25); just get-input $N > ./puzzles/$N/data/input; end
